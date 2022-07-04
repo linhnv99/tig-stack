@@ -1,0 +1,43 @@
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      cors:
+        allowed-origins: '*'
+        allowed-methods: 'GET, POST'
+    jmx:
+      exposure:
+        include: '*'
+
+  metrics:
+    export:
+      influx:
+        uri: ${INFLUX_URI:http://localhost:8086}
+        token: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:aee967209034b6f2f901bb22b92b5c37621ae7f786d6673a58dd0a29b2f301ba}
+        user-name: ${DOCKER_INFLUXDB_INIT_USERNAME:admin}
+        password: ${DOCKER_INFLUXDB_INIT_PASSWORD:password}
+        bucket: ${DOCKER_INFLUXDB_INIT_BUCKET:mybucket}
+        org: ${DOCKER_INFLUXDB_INIT_ORG:myorg}
+
+  endpoint:
+    health:
+      show-details: always
+    jolokia:
+      config:
+        debug: true
+      enabled: true
+
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+  health:
+    influxdb:
+      enabled: true
+
+
+

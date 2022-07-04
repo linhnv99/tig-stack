@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  tig-app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: tig-stack
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    networks:
+      - tig-net
+
+  influxdb:
+    image: influxdb:2.1.1
+    volumes:
+      - ./data:/var/lib/influxdb2:rw
+    env_file:
+      - ./.env
+    entrypoint: ["./entrypoint.sh"]
+    restart: on-failure
+    ports:
+      - "8086:8086"
+    networks:
+      - tig-net
+
+  telegraf:
+    image: telegraf:1.23
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:rw
+    env_file:
+      - ./.env
+    tty: true
+    privileged: true
+    depends_on:
+      - influxdb
+    networks:
+      - tig-net
+
+  grafana:
+    image: grafana/grafana-oss:8.4.3
+    volumes:
+      - ./data:/var/lib/grafana:rw
+    depends_on:
+      - influxdb
+    ports:
+      - "3000:3000"
+    networks:
+      - tig-net
+
+volumes:
+  data:
+
+networks:
+  tig-net:
+    driver: bridge
