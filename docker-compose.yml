@@ -46,6 +46,9 @@ services:
       - influxdb
     ports:
       - "3000:3000"
+    command:
+      - "sudo chown -R 472:472 /mnt/data/grafana/"
+    user: "472"
     networks:
       - tig-net
 
